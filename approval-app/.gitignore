@@ -1,6 +1,9 @@
 # backend
 backend/app.db
 backend/*.db
+backend/tmp/
+backend/approval-api
+backend/approval-api.exe
 
 # frontend
 frontend/node_modules/

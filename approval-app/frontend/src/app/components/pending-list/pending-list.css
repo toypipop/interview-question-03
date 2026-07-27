@@ -1,0 +1,19 @@
+.review-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.review-bar__left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: auto;
+}
+
+.review-bar__count {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}

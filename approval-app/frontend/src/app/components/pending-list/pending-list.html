@@ -1,11 +1,5 @@
 <div class="toolbar">
   <button class="btn btn--primary" (click)="openCreateModal()">+ สร้างรายการ</button>
-  <button class="btn btn--outline" (click)="openMemoModal('approve')" [disabled]="selectedIds.size === 0">
-    อนุมัติ
-  </button>
-  <button class="btn btn--danger" (click)="openMemoModal('reject')" [disabled]="selectedIds.size === 0">
-    ไม่อนุมัติ
-  </button>
 </div>
 
 <p class="error" *ngIf="error()">{{ error() }}</p>
@@ -18,32 +12,52 @@
     <span></span>
   </div>
 
-  <div class="row row--pending" *ngFor="let item of items()">
+  <div
+    class="row row--pending row--clickable"
+    [class.row--selected]="isSelected(item.id)"
+    *ngFor="let item of items()"
+    (click)="toggleRow(item.id)"
+  >
     <input
       type="checkbox"
       [checked]="isSelected(item.id)"
       (change)="toggleSelected(item.id, $any($event.target).checked)"
+      (click)="$event.stopPropagation()"
     />
 
-    <ng-container *ngIf="editingId === item.id; else viewTitle">
-      <input class="row__title-input" [(ngModel)]="editingTitle" (keyup.enter)="submitEdit(item.id)" />
-    </ng-container>
-    <ng-template #viewTitle>
-      <span class="row__title">{{ item.title }}</span>
-    </ng-template>
+    <span class="row__title">{{ item.title }}</span>
 
     <span class="pill pill--pending">รออนุมัติ</span>
 
-    <div class="row__actions">
-      <ng-container *ngIf="editingId === item.id; else viewActions">
-        <button class="btn btn--primary btn--sm" (click)="submitEdit(item.id)">บันทึก</button>
-        <button class="btn btn--ghost btn--sm" (click)="cancelEdit()">ยกเลิก</button>
-      </ng-container>
-      <ng-template #viewActions>
-        <button class="btn btn--outline btn--sm" (click)="startEdit(item)">แก้ไข</button>
-        <button class="btn btn--danger btn--sm" (click)="deleteItem(item.id)">ลบ</button>
-      </ng-template>
+    <div class="row__actions" (click)="$event.stopPropagation()">
+      <button class="btn btn--outline btn--sm" (click)="openEditModal(item)">แก้ไข</button>
+      <button class="btn btn--danger btn--sm" (click)="openDeleteModal(item)">ลบ</button>
     </div>
+  </div>
+
+  <div class="review-bar">
+    <div class="review-bar__left">
+      <button class="btn btn--outline" (click)="toggleSelectAll()">
+        {{ allSelected ? 'ยกเลิกการเลือก' : 'เลือกทั้งหมด' }}
+      </button>
+      <span class="review-bar__count" *ngIf="selectedIds.size > 0">
+        เลือก {{ selectedIds.size }} รายการ
+      </span>
+    </div>
+    <button
+      class="btn btn--outline"
+      (click)="openMemoModal('approve')"
+      [disabled]="selectedIds.size === 0"
+    >
+      อนุมัติ
+    </button>
+    <button
+      class="btn btn--danger"
+      (click)="openMemoModal('reject')"
+      [disabled]="selectedIds.size === 0"
+    >
+      ไม่อนุมัติ
+    </button>
   </div>
 </div>
 
@@ -54,10 +68,62 @@
 <div class="modal-backdrop" *ngIf="showCreateModal">
   <div class="modal">
     <h3>สร้างรายการใหม่</h3>
-    <input [(ngModel)]="newTitle" placeholder="ชื่อรายการ" (keyup.enter)="submitCreate()" />
+    <div class="field">
+      <label class="field__label" for="create-title">
+        ชื่อรายการ <span class="field__req">*</span>
+      </label>
+      <input
+        id="create-title"
+        [(ngModel)]="newTitle"
+        (ngModelChange)="newTitleError = ''"
+        [class.input--error]="newTitleError"
+        [attr.aria-invalid]="!!newTitleError"
+        placeholder="เช่น ใบเบิกอุปกรณ์สำนักงาน"
+        maxlength="200"
+        (keyup.enter)="submitCreate()"
+      />
+      <p class="field__error" *ngIf="newTitleError">{{ newTitleError }}</p>
+    </div>
     <div class="modal-actions">
       <button class="btn btn--ghost" (click)="closeCreateModal()">ยกเลิก</button>
       <button class="btn btn--primary" (click)="submitCreate()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showEditModal">
+  <div class="modal">
+    <h3>แก้ไขชื่อรายการ</h3>
+    <div class="field">
+      <label class="field__label" for="edit-title">
+        ชื่อรายการ <span class="field__req">*</span>
+      </label>
+      <input
+        id="edit-title"
+        [(ngModel)]="editingTitle"
+        (ngModelChange)="editingTitleError = ''"
+        [class.input--error]="editingTitleError"
+        [attr.aria-invalid]="!!editingTitleError"
+        placeholder="ชื่อรายการ"
+        maxlength="200"
+        (keyup.enter)="submitEdit()"
+      />
+      <p class="field__error" *ngIf="editingTitleError">{{ editingTitleError }}</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" (click)="closeEditModal()">ยกเลิก</button>
+      <button class="btn btn--primary" (click)="submitEdit()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="deletingItem">
+  <div class="modal">
+    <h3>ลบรายการนี้?</h3>
+    <p class="modal__text">“{{ deletingItem?.title }}” จะถูกลบถาวรและกู้คืนไม่ได้</p>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" (click)="closeDeleteModal()">ยกเลิก</button>
+      <button class="btn btn--danger" (click)="confirmDelete()">ลบ</button>
     </div>
   </div>
 </div>
@@ -68,7 +134,19 @@
       {{ memoAction === 'approve' ? 'อนุมัติ' : 'ไม่อนุมัติ' }}
       {{ selectedIds.size }} รายการ
     </h3>
-    <textarea [(ngModel)]="memo" placeholder="หมายเหตุ"></textarea>
+    <div class="field">
+      <label class="field__label" for="memo">หมายเหตุ <span class="field__req">*</span></label>
+      <textarea
+        id="memo"
+        [(ngModel)]="memo"
+        (ngModelChange)="memoError = ''"
+        [class.input--error]="memoError"
+        [attr.aria-invalid]="!!memoError"
+        placeholder="เหตุผลในการพิจารณา"
+        maxlength="500"
+      ></textarea>
+      <p class="field__error" *ngIf="memoError">{{ memoError }}</p>
+    </div>
     <div class="modal-actions">
       <button class="btn btn--ghost" (click)="closeMemoModal()">ยกเลิก</button>
       <button

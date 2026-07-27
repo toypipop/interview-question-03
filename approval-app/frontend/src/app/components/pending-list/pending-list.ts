@@ -18,13 +18,19 @@ export class PendingList implements OnInit {
 
   showCreateModal = false;
   newTitle = '';
+  newTitleError = '';
 
+  showEditModal = false;
   editingId: number | null = null;
   editingTitle = '';
+  editingTitleError = '';
+
+  deletingItem: Approval | null = null;
 
   showMemoModal = false;
   memoAction: 'approve' | 'reject' | null = null;
   memo = '';
+  memoError = '';
 
   constructor(private approvalService: ApprovalService) {}
 
@@ -54,8 +60,33 @@ export class PendingList implements OnInit {
     return this.selectedIds.has(id);
   }
 
+  toggleRow(id: number): void {
+    this.toggleSelected(id, !this.selectedIds.has(id));
+  }
+
+  get allSelected(): boolean {
+    const items = this.items();
+    return items.length > 0 && this.selectedIds.size === items.length;
+  }
+
+  toggleSelectAll(): void {
+    if (this.allSelected) {
+      this.selectedIds.clear();
+    } else {
+      this.items().forEach((item) => this.selectedIds.add(item.id));
+    }
+  }
+
+  private validate(value: string, label: string, maxLength: number): string {
+    const trimmed = value.trim();
+    if (!trimmed) return `กรุณากรอก${label}`;
+    if (trimmed.length > maxLength) return `${label}ต้องไม่เกิน ${maxLength} ตัวอักษร`;
+    return '';
+  }
+
   openCreateModal(): void {
     this.newTitle = '';
+    this.newTitleError = '';
     this.showCreateModal = true;
   }
 
@@ -64,7 +95,9 @@ export class PendingList implements OnInit {
   }
 
   submitCreate(): void {
-    if (!this.newTitle.trim()) return;
+    this.newTitleError = this.validate(this.newTitle, 'ชื่อรายการ', 200);
+    if (this.newTitleError) return;
+
     this.approvalService.create(this.newTitle.trim()).subscribe({
       next: () => {
         this.showCreateModal = false;
@@ -74,30 +107,51 @@ export class PendingList implements OnInit {
     });
   }
 
-  startEdit(item: Approval): void {
+  openEditModal(item: Approval): void {
     this.editingId = item.id;
     this.editingTitle = item.title;
+    this.editingTitleError = '';
+    this.showEditModal = true;
   }
 
-  cancelEdit(): void {
+  closeEditModal(): void {
+    this.showEditModal = false;
     this.editingId = null;
   }
 
-  submitEdit(id: number): void {
-    if (!this.editingTitle.trim()) return;
-    this.approvalService.update(id, this.editingTitle.trim()).subscribe({
+  submitEdit(): void {
+    if (this.editingId === null) return;
+    this.editingTitleError = this.validate(this.editingTitle, 'ชื่อรายการ', 200);
+    if (this.editingTitleError) return;
+
+    this.approvalService.update(this.editingId, this.editingTitle.trim()).subscribe({
       next: () => {
-        this.editingId = null;
+        this.closeEditModal();
         this.refresh();
       },
       error: (err) => this.error.set(err.message),
     });
   }
 
-  deleteItem(id: number): void {
-    this.approvalService.delete(id).subscribe({
-      next: () => this.refresh(),
-      error: (err) => this.error.set(err.message),
+  openDeleteModal(item: Approval): void {
+    this.deletingItem = item;
+  }
+
+  closeDeleteModal(): void {
+    this.deletingItem = null;
+  }
+
+  confirmDelete(): void {
+    if (!this.deletingItem) return;
+    this.approvalService.delete(this.deletingItem.id).subscribe({
+      next: () => {
+        this.deletingItem = null;
+        this.refresh();
+      },
+      error: (err) => {
+        this.deletingItem = null;
+        this.error.set(err.message);
+      },
     });
   }
 
@@ -105,6 +159,7 @@ export class PendingList implements OnInit {
     if (this.selectedIds.size === 0) return;
     this.memoAction = action;
     this.memo = '';
+    this.memoError = '';
     this.showMemoModal = true;
   }
 
@@ -114,11 +169,15 @@ export class PendingList implements OnInit {
   }
 
   submitMemo(): void {
+    this.memoError = this.validate(this.memo, 'หมายเหตุ', 500);
+    if (this.memoError) return;
+
     const ids = Array.from(this.selectedIds);
+    const memo = this.memo.trim();
     const call =
       this.memoAction === 'approve'
-        ? this.approvalService.approve(ids, this.memo)
-        : this.approvalService.reject(ids, this.memo);
+        ? this.approvalService.approve(ids, memo)
+        : this.approvalService.reject(ids, memo);
 
     call.subscribe({
       next: () => {

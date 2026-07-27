@@ -13,7 +13,7 @@
     <span class="pill pill--rejected">ไม่อนุมัติ</span>
     <span class="row__memo">{{ item.memo || '—' }}</span>
     <div class="row__actions">
-      <button class="btn btn--outline btn--sm" (click)="cancelItem(item.id)">ยกเลิก</button>
+      <button class="btn btn--outline btn--sm" (click)="openCancelModal(item)">ยกเลิก</button>
     </div>
   </div>
 </div>
@@ -21,3 +21,16 @@
 <ng-template #empty>
   <p class="empty-state">ยังไม่มีรายการที่ไม่อนุมัติ</p>
 </ng-template>
+
+<div class="modal-backdrop" *ngIf="cancelingItem">
+  <div class="modal">
+    <h3>ยกเลิกการไม่อนุมัติ?</h3>
+    <p class="modal__text">
+      “{{ cancelingItem?.title }}” จะกลับไปเป็นสถานะรออนุมัติ และหมายเหตุที่บันทึกไว้จะถูกล้าง
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" (click)="closeCancelModal()">ปิด</button>
+      <button class="btn btn--primary" (click)="confirmCancel()">ยืนยัน</button>
+    </div>
+  </div>
+</div>

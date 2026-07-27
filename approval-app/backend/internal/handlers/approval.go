@@ -26,7 +26,7 @@ func (h *ApprovalHandler) List(c *gin.Context) {
 		query += " WHERE status = ?"
 		args = append(args, status)
 	}
-	query += " ORDER BY id DESC"
+	query += " ORDER BY id ASC"
 
 	rows, err := h.DB.Query(query, args...)
 	if err != nil {
@@ -49,7 +49,7 @@ func (h *ApprovalHandler) List(c *gin.Context) {
 }
 
 type createRequest struct {
-	Title string `json:"title" binding:"required"`
+	Title string `json:"title" binding:"required,max=200"`
 }
 
 func (h *ApprovalHandler) Create(c *gin.Context) {
@@ -82,7 +82,7 @@ func (h *ApprovalHandler) Create(c *gin.Context) {
 }
 
 type updateRequest struct {
-	Title string `json:"title" binding:"required"`
+	Title string `json:"title" binding:"required,max=200"`
 }
 
 func (h *ApprovalHandler) Update(c *gin.Context) {
@@ -132,7 +132,7 @@ func (h *ApprovalHandler) Delete(c *gin.Context) {
 
 type bulkRequest struct {
 	IDs  []int  `json:"ids" binding:"required"`
-	Memo string `json:"memo"`
+	Memo string `json:"memo" binding:"required,max=500"`
 }
 
 func (h *ApprovalHandler) bulkSetStatus(c *gin.Context, status string) {

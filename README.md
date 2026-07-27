@@ -1,20 +1,29 @@
 # interview-question-03 Approval App
 
-Monorepo: Go + Gin backend, SQLite, Angular frontend. See `../qwer.md` for the full spec.
+Go + Gin + SQLite backend, Angular 22 frontend. Full spec: `../qwer.md`
+
+## Install
+
+| Tool | Version | Command |
+| --- | --- | --- |
+| Go | 1.26.4+ | `winget install GoLang.Go` |
+| air | latest | `go install github.com/air-verse/air@latest` |
+| Node.js | v24.15.0+ (or v22.22.3+ / v26+) | `winget install OpenJS.NodeJS.LTS` |
+
+No separate SQLite install (pure-Go driver). No global Angular CLI needed.
 
 ## Run
 
-Terminal 1:
+One-time:
 ```bash
-cd backend
-go run main.go
+cd approval-app/frontend
+npm install
 ```
 
-Terminal 2:
+Then two terminals:
 ```bash
-cd frontend
-npm start
+cd approval-app/backend && air         # http://localhost:8080
 ```
-
-Backend: http://localhost:8080
-Frontend: http://localhost:4200
+```bash
+cd approval-app/frontend && npm start  # http://localhost:4200
+```

@@ -1,0 +1,94 @@
+.guide {
+  max-width: 620px;
+  max-height: 85vh;
+  overflow-y: auto;
+  gap: 1rem;
+}
+
+.guide__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.guide__header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.guide__intro {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  background: var(--color-secondary-soft);
+  border-left: 3px solid var(--color-brand);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.8rem;
+}
+
+.guide__intro b {
+  color: var(--color-primary-dark);
+}
+
+.guide__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.guide__steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  column-gap: 0.65rem;
+  font-size: 0.82rem;
+}
+
+.guide__steps li::before {
+  content: counter(step);
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--color-brand-dark);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.guide__steps b {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.guide__steps span {
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.guide__steps code {
+  font-size: 0.76rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+}
+
+.guide__tip {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.55rem 0.8rem;
+}

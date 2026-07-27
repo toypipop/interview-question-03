@@ -1,0 +1,45 @@
+<div class="modal-backdrop" (click)="close()">
+  <div
+    class="modal guide"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="guide-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="guide__header">
+      <h3 id="guide-title">คู่มือใช้งาน GreenBook</h3>
+      <button class="btn btn--ghost btn--sm" (click)="close()" aria-label="ปิดคู่มือ">✕</button>
+    </header>
+
+    <p class="guide__intro">
+      รายการเริ่มที่ <b>รออนุมัติ</b> → พิจารณาเป็น <b>อนุมัติแล้ว</b> หรือ <b>ไม่อนุมัติ</b>
+    </p>
+
+    <ol class="guide__steps">
+      <li>
+        <b>สร้าง</b>
+        <span>กด <code>+ สร้างรายการ</code> พิมพ์ชื่อ แล้วบันทึก</span>
+      </li>
+      <li>
+        <b>แก้ไข / ลบ</b>
+        <span>ปุ่มในแถว — ได้เฉพาะรายการที่ยังรออนุมัติ</span>
+      </li>
+      <li>
+        <b>พิจารณา</b>
+        <span
+          >ติ๊กรายการ (เลือกหลายอันได้) → “อนุมัติ” หรือ “ไม่อนุมัติ” → ใส่หมายเหตุ → ยืนยัน</span
+        >
+      </li>
+      <li>
+        <b>ย้อนกลับ</b>
+        <span>ปุ่ม “ยกเลิก” ในสองแท็บผล ดึงกลับเป็นรออนุมัติ และล้างหมายเหตุ</span>
+      </li>
+    </ol>
+
+    <p class="guide__tip">Esc หรือคลิกพื้นที่นอกกล่อง = ปิด · เปิดซ้ำที่ปุ่ม “คู่มือใช้งาน”</p>
+
+    <div class="modal-actions">
+      <button class="btn btn--primary" (click)="close()">เริ่มใช้งาน</button>
+    </div>
+  </div>
+</div>

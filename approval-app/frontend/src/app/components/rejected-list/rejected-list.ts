@@ -27,10 +27,27 @@ export class RejectedList implements OnInit {
     });
   }
 
-  cancelItem(id: number): void {
-    this.approvalService.cancel(id).subscribe({
-      next: () => this.refresh(),
-      error: (err) => this.error.set(err.message),
+  cancelingItem: Approval | null = null;
+
+  openCancelModal(item: Approval): void {
+    this.cancelingItem = item;
+  }
+
+  closeCancelModal(): void {
+    this.cancelingItem = null;
+  }
+
+  confirmCancel(): void {
+    if (!this.cancelingItem) return;
+    this.approvalService.cancel(this.cancelingItem.id).subscribe({
+      next: () => {
+        this.cancelingItem = null;
+        this.refresh();
+      },
+      error: (err) => {
+        this.cancelingItem = null;
+        this.error.set(err.message);
+      },
     });
   }
 }

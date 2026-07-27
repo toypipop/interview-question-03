@@ -20,11 +20,20 @@
 }
 
 .brand__mark {
-  width: 12px;
-  height: 41px;
-  border-radius: 4px;
-  background: linear-gradient(180deg, var(--color-secondary), var(--color-primary));
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: linear-gradient(160deg, var(--color-brand), var(--color-brand-dark));
+  box-shadow: 0 2px 6px rgba(21, 128, 61, 0.28);
+  color: #fff;
   flex-shrink: 0;
+}
+
+.brand__mark svg {
+  width: 21px;
+  height: 21px;
 }
 
 .brand__title {
@@ -39,6 +48,24 @@
   margin: 0.1rem 0 0;
   font-size: 0.78rem;
   color: var(--color-text-muted);
+}
+
+.brand__titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.guide-btn__mark {
+  display: grid;
+  place-items: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  background: var(--color-brand-dark);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
 }
 
 .tabs {
@@ -59,7 +86,9 @@
   padding: 0.5rem 0.9rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .tabs__item:hover {
