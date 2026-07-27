@@ -1,0 +1,84 @@
+<div class="toolbar">
+  <button class="btn btn--primary" (click)="openCreateModal()">+ สร้างรายการ</button>
+  <button class="btn btn--outline" (click)="openMemoModal('approve')" [disabled]="selectedIds.size === 0">
+    อนุมัติ
+  </button>
+  <button class="btn btn--danger" (click)="openMemoModal('reject')" [disabled]="selectedIds.size === 0">
+    ไม่อนุมัติ
+  </button>
+</div>
+
+<p class="error" *ngIf="error()">{{ error() }}</p>
+
+<div class="list" *ngIf="items().length > 0; else empty">
+  <div class="list-head list-head--pending">
+    <span></span>
+    <span>ชื่อรายการ</span>
+    <span>สถานะ</span>
+    <span></span>
+  </div>
+
+  <div class="row row--pending" *ngFor="let item of items()">
+    <input
+      type="checkbox"
+      [checked]="isSelected(item.id)"
+      (change)="toggleSelected(item.id, $any($event.target).checked)"
+    />
+
+    <ng-container *ngIf="editingId === item.id; else viewTitle">
+      <input class="row__title-input" [(ngModel)]="editingTitle" (keyup.enter)="submitEdit(item.id)" />
+    </ng-container>
+    <ng-template #viewTitle>
+      <span class="row__title">{{ item.title }}</span>
+    </ng-template>
+
+    <span class="pill pill--pending">รออนุมัติ</span>
+
+    <div class="row__actions">
+      <ng-container *ngIf="editingId === item.id; else viewActions">
+        <button class="btn btn--primary btn--sm" (click)="submitEdit(item.id)">บันทึก</button>
+        <button class="btn btn--ghost btn--sm" (click)="cancelEdit()">ยกเลิก</button>
+      </ng-container>
+      <ng-template #viewActions>
+        <button class="btn btn--outline btn--sm" (click)="startEdit(item)">แก้ไข</button>
+        <button class="btn btn--danger btn--sm" (click)="deleteItem(item.id)">ลบ</button>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<ng-template #empty>
+  <p class="empty-state">ยังไม่มีรายการรออนุมัติ — กด “สร้างรายการ” เพื่อเริ่มต้น</p>
+</ng-template>
+
+<div class="modal-backdrop" *ngIf="showCreateModal">
+  <div class="modal">
+    <h3>สร้างรายการใหม่</h3>
+    <input [(ngModel)]="newTitle" placeholder="ชื่อรายการ" (keyup.enter)="submitCreate()" />
+    <div class="modal-actions">
+      <button class="btn btn--ghost" (click)="closeCreateModal()">ยกเลิก</button>
+      <button class="btn btn--primary" (click)="submitCreate()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showMemoModal">
+  <div class="modal">
+    <h3>
+      {{ memoAction === 'approve' ? 'อนุมัติ' : 'ไม่อนุมัติ' }}
+      {{ selectedIds.size }} รายการ
+    </h3>
+    <textarea [(ngModel)]="memo" placeholder="หมายเหตุ"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" (click)="closeMemoModal()">ยกเลิก</button>
+      <button
+        class="btn"
+        [class.btn--primary]="memoAction === 'approve'"
+        [class.btn--danger]="memoAction === 'reject'"
+        (click)="submitMemo()"
+      >
+        ยืนยัน
+      </button>
+    </div>
+  </div>
+</div>

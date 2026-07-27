@@ -1,0 +1,47 @@
+<div class="shell">
+  <header class="shell__header">
+    <div class="brand">
+      <span class="brand__mark"></span>
+      <div>
+        <h1 class="brand__title">Approval</h1>
+        <p class="brand__subtitle">รายการรออนุมัติและประวัติการพิจารณา</p>
+      </div>
+    </div>
+
+    <nav class="tabs" role="tablist" aria-label="สถานะรายการ">
+      <button
+        class="tabs__item"
+        [class.tabs__item--active]="activeTab === 'pending'"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'pending'"
+        (click)="setTab('pending')"
+      >
+        รออนุมัติ
+      </button>
+      <button
+        class="tabs__item"
+        [class.tabs__item--active]="activeTab === 'approved'"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'approved'"
+        (click)="setTab('approved')"
+      >
+        อนุมัติแล้ว
+      </button>
+      <button
+        class="tabs__item"
+        [class.tabs__item--active]="activeTab === 'rejected'"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'rejected'"
+        (click)="setTab('rejected')"
+      >
+        ไม่อนุมัติ
+      </button>
+    </nav>
+  </header>
+
+  <main class="shell__content">
+    <app-pending-list *ngIf="activeTab === 'pending'"></app-pending-list>
+    <app-approved-list *ngIf="activeTab === 'approved'"></app-approved-list>
+    <app-rejected-list *ngIf="activeTab === 'rejected'"></app-rejected-list>
+  </main>
+</div>

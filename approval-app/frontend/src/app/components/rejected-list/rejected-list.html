@@ -1,0 +1,23 @@
+<p class="error" *ngIf="error()">{{ error() }}</p>
+
+<div class="list" *ngIf="items().length > 0; else empty">
+  <div class="list-head list-head--reviewed">
+    <span>ชื่อรายการ</span>
+    <span>สถานะ</span>
+    <span>หมายเหตุ</span>
+    <span></span>
+  </div>
+
+  <div class="row row--rejected" *ngFor="let item of items()">
+    <span class="row__title">{{ item.title }}</span>
+    <span class="pill pill--rejected">ไม่อนุมัติ</span>
+    <span class="row__memo">{{ item.memo || '—' }}</span>
+    <div class="row__actions">
+      <button class="btn btn--outline btn--sm" (click)="cancelItem(item.id)">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #empty>
+  <p class="empty-state">ยังไม่มีรายการที่ไม่อนุมัติ</p>
+</ng-template>

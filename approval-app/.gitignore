@@ -1,0 +1,8 @@
+# backend
+backend/app.db
+backend/*.db
+
+# frontend
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
