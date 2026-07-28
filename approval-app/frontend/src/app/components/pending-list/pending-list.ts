@@ -27,6 +27,9 @@ export class PendingList implements OnInit {
 
   deletingItem: Approval | null = null;
 
+  showMockModal = false;
+  mockLoading = false;
+
   showMemoModal = false;
   memoAction: 'approve' | 'reject' | null = null;
   memo = '';
@@ -150,6 +153,33 @@ export class PendingList implements OnInit {
       },
       error: (err) => {
         this.deletingItem = null;
+        this.error.set(err.message);
+      },
+    });
+  }
+
+  openMockModal(): void {
+    this.showMockModal = true;
+  }
+
+  closeMockModal(): void {
+    if (this.mockLoading) return;
+    this.showMockModal = false;
+  }
+
+  confirmMock(): void {
+    if (this.mockLoading) return;
+    this.mockLoading = true;
+    this.approvalService.mock().subscribe({
+      next: () => {
+        this.mockLoading = false;
+        this.showMockModal = false;
+        this.error.set('');
+        this.refresh();
+      },
+      error: (err) => {
+        this.mockLoading = false;
+        this.showMockModal = false;
         this.error.set(err.message);
       },
     });

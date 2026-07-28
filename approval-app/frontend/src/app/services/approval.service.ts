@@ -33,6 +33,10 @@ export class ApprovalService {
     return this.http.post(`${API_BASE}/approvals/reject`, { ids, memo });
   }
 
+  mock(): Observable<unknown> {
+    return this.http.post(`${API_BASE}/approvals/mock`, {});
+  }
+
   cancel(id: number): Observable<unknown> {
     return this.http.post(`${API_BASE}/approvals/${id}/cancel`, {});
   }

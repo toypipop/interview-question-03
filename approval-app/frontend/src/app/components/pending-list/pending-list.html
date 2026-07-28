@@ -1,4 +1,5 @@
 <div class="toolbar">
+  <button class="btn btn--outline toolbar__left" (click)="openMockModal()">MockUp</button>
   <button class="btn btn--primary" (click)="openCreateModal()">+ สร้างรายการ</button>
 </div>
 
@@ -124,6 +125,22 @@
     <div class="modal-actions">
       <button class="btn btn--ghost" (click)="closeDeleteModal()">ยกเลิก</button>
       <button class="btn btn--danger" (click)="confirmDelete()">ลบ</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showMockModal">
+  <div class="modal">
+    <h3>สร้างข้อมูลตัวอย่าง?</h3>
+    <p class="modal__text">
+      ข้อมูลทั้งหมดในระบบ (ทุกสถานะ) จะถูกลบถาวร แล้วแทนที่ด้วยข้อมูลตัวอย่าง
+      รออนุมัติ 10 · อนุมัติ 5 · ไม่อนุมัติ 5
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" (click)="closeMockModal()">ยกเลิก</button>
+      <button class="btn btn--danger" (click)="confirmMock()" [disabled]="mockLoading">
+        {{ mockLoading ? 'กำลังสร้าง…' : 'ล้างและสร้างใหม่' }}
+      </button>
     </div>
   </div>
 </div>

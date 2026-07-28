@@ -34,6 +34,7 @@ func main() {
 		api.POST("/approvals/approve", h.Approve)
 		api.POST("/approvals/reject", h.Reject)
 		api.POST("/approvals/:id/cancel", h.Cancel)
+		api.POST("/approvals/mock", h.Mock)
 	}
 
 	log.Println("listening on :8080")

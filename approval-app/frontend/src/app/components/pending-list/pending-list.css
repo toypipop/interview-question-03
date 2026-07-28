@@ -1,3 +1,7 @@
+.toolbar__left {
+  margin-right: auto;
+}
+
 .review-bar {
   display: flex;
   align-items: center;
